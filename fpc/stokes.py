@@ -3,6 +3,7 @@ Stokes/Mueller calculus.
 """
 import numpy as np
 import polanalyser as pa  # https://github.com/elerac/polanalyser
+from spectacle.linearity import sRGB
 
 # Order of the polariser filters on the Blackfly camera
 filter_angles = np.array([0, 45, 90, 135])  # Degrees
@@ -35,3 +36,12 @@ def convert_stokes_to_lp(img_stokes, **kwargs):
     img_AoLP = np.rad2deg(img_AoLP)
 
     return img_intensity, img_DoLP, img_AoLP
+
+
+def convert_to_RGB_image(img, normalization=65535, gamma=2.4):
+    """
+    Convert RGB data (any of the Stokes parameters, DoLP/AoLP, etc.) to an RGB image.
+    Applies a gamma correction for better visibility.
+    """
+    img_gamma = sRGB(img, normalization=normalization, gamma=gamma)
+    return img_gamma
