@@ -17,7 +17,7 @@ import numpy as np
 from sys import argv
 from spectacle import io
 from os import walk, makedirs
-import dofp
+import fpc
 
 # Get the data folder from the command line
 folder = io.path_from_input(argv)
@@ -43,7 +43,7 @@ for tup in walk(folder):
     makedirs(goal.parent, exist_ok=True)
 
     # Load all RAW files
-    arrs = dofp.io.load_image_blackfly_multi(raw_files)
+    arrs = fpc.io.load_image_blackfly_multi(raw_files)
 
     # Calculate and save the mean per pixel
     mean = arrs.mean(axis=0, dtype=np.float32)
