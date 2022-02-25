@@ -5,12 +5,10 @@ Demosaicking is done by splitting the image into its components.
 Call signature:
     python process_RGBG_simple.py my_file.raw
 """
+from sys import argv
+from pathlib import Path
 import numpy as np
 from matplotlib import pyplot as plt
-from spectacle import plot, symmetric_percentiles
-from pathlib import Path
-from sys import argv
-
 import fpc
 
 # Get the filename from the command line
