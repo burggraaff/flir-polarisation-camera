@@ -18,9 +18,6 @@ label = filename.stem
 # Load the RAW file as an array
 img = fpc.io.load_image_blackfly(filename)
 
-# Show the RAW file and its histogram
-fpc.plot.show_testplot(img, bins=np.linspace(0, 65536, 250), label="RAW Pixel value")
-
 # Demosaicking
 img_demosaicked = fpc.stokes.demosaick_RGB(img)  # Dimensions: [x, y, RGB, Polarisers]
 # img_demosaicked = np.moveaxis(img_demosaicked, (0, 1), (-2, -1))  # Move image axes to the end
