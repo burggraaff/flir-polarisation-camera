@@ -9,6 +9,8 @@ from spectacle.plot import _saveshow
 from cmcrameri import cm as colourmaps
 from . import stokes
 
+plt.rcParams['figure.dpi'] = 300
+
 
 def convert_to_RGB_image(img, normalization=65535, gamma=2.4):
     """
@@ -135,9 +137,9 @@ def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intens
         _saveshow(saveto)
 
 
-def show_intensity_dolp_aolp_RGB(img_intensity_RGB, img_dolp_RGB, img_aolp_RGB, title="", saveto=None, **kwargs):
+def show_intensity_dolp_aolp_RGB_separate(img_intensity_RGB, img_dolp_RGB, img_aolp_RGB, title="", saveto=None, **kwargs):
     """
-    Plot the intensity, DoLP, and AoLP for an RGB images in three columns.
+    Plot the intensity, DoLP, and AoLP for an RGB image in three columns.
     """
     # Create a figure
     fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=True, tight_layout=True, figsize=(9,9))
@@ -147,6 +149,31 @@ def show_intensity_dolp_aolp_RGB(img_intensity_RGB, img_dolp_RGB, img_aolp_RGB, 
     for axs_column, img_intensity, img_dolp, img_aolp, label in zip(axs.T, img_intensity_RGB, img_dolp_RGB, img_aolp_RGB, "RGB"):
         show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=axs_column, **kwargs)
         axs_column[0].set_title(label)
+
+    # Add a title if one was provided
+    if title:
+        fig.suptitle(title)
+
+    # Save/show the result
+    _saveshow(saveto)
+
+
+def show_intensity_dolp_aolp_RGB(img_intensity_RGB, img_dolp_RGB, img_aolp_RGB, title="", saveto=None, **kwargs):
+    """
+    Plot the intensity, DoLP, and AoLP for an RGB images in three colour panels.
+    """
+    # Create a figure
+    fig, axs = plt.subplots(ncols=3, sharex=True, sharey=True, tight_layout=True, figsize=(10,5))
+
+    # Normalise and show RGB image
+    img_intensity = convert_to_RGB_image(img_intensity_RGB).astype(np.uint8)
+    img_dolp = convert_to_RGB_image(img_dolp_RGB, normalization=1).astype(np.uint8)
+    img_aolp = convert_to_RGB_image(img_aolp_RGB, normalization=360).astype(np.uint8)
+
+    # Show each image
+    for ax, img, subtitle in zip(axs, [img_intensity, img_dolp, img_aolp], ["Radiance", "DoLP", "AoLP"]):
+        ax.imshow(img)
+        ax.set_title(subtitle)
 
     # Add a title if one was provided
     if title:

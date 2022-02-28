@@ -27,9 +27,5 @@ img_stokes = fpc.stokes.convert_demosaicked_image_to_stokes(img_demosaicked)  # 
 img_intensity, img_dolp, img_aolp = fpc.stokes.convert_stokes_to_lp(img_stokes)
 
 # Show the result
-fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=f"results/{label}.pdf")
-
-# Normalise and show RGB image
-img_intensity_RGB = fpc.plot.convert_to_RGB_image(img_intensity).astype(np.uint8)
-img_dolp_RGB = fpc.plot.convert_to_RGB_image(img_dolp, normalization=1).astype(np.uint8)
-img_aolp_RGB = fpc.plot.convert_to_RGB_image(img_aolp, normalization=360).astype(np.uint8)
+fpc.plot.show_intensity_dolp_aolp_RGB_separate(img_intensity, img_dolp, img_aolp, title=label, saveto=f"results/{label}.png")
+fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=f"results/{label}_RGB.png")

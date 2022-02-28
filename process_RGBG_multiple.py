@@ -3,19 +3,26 @@ Simple data processing for images from the RGBG polarisation camera.
 Demosaicking is done by splitting the image into its components.
 
 Call signature:
-    python process_RGBG_simple.py my_file.raw
+    python process_RGBG_multiple.py my_folder/
 """
+from sys import argv
+from pathlib import Path
+from os import mkdir
 import numpy as np
 from matplotlib import pyplot as plt
-from spectacle import plot, symmetric_percentiles
-from pathlib import Path
-from sys import argv
-
+import spectacle
 import fpc
 
 # Get the filename from the command line
 folder = Path(argv[1])
 filenames = folder.glob("*.raw")
+
+# Where to save the results
+saveto = Path("E:/processed/") / folder.stem
+try:
+    mkdir(saveto)
+except FileExistsError:
+    pass
 
 # Loop over the filenames
 for filename in filenames:
@@ -23,7 +30,7 @@ for filename in filenames:
     label = filename.stem
 
     # Load the RAW file as an array
-    img = fpc.io.load_image_blackfly(filename)
+    img = fpc.io.load_image_blackfly(filename, mask_saturated=True)
 
     # Demosaicking
     img_demosaicked = fpc.stokes.demosaick_RGB(img)  # Dimensions: [x, y, RGB, Polarisers]
@@ -34,4 +41,5 @@ for filename in filenames:
     img_intensity, img_dolp, img_aolp = fpc.stokes.convert_stokes_to_lp(img_stokes)
 
     # Show the result
-    fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=f"E:/processed/{label}.png")
+    fpc.plot.show_intensity_dolp_aolp_RGB_separate(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}.png")
+    fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}_RGB.png")
