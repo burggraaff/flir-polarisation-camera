@@ -16,7 +16,7 @@ filename = Path(argv[1])
 label = filename.stem
 
 # Load the RAW file as an array
-img = fpc.io.load_image_blackfly(filename)
+img = fpc.io.load_image_blackfly(filename, mask_saturated=True)
 
 # Demosaicking
 img_demosaicked = fpc.stokes.demosaick_RGB(img)  # Dimensions: [x, y, RGB, Polarisers]
@@ -30,6 +30,6 @@ img_intensity, img_dolp, img_aolp = fpc.stokes.convert_stokes_to_lp(img_stokes)
 fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=f"results/{label}.pdf")
 
 # Normalise and show RGB image
-img_intensity_RGB = fpc.stokes.convert_to_RGB_image(img_intensity).astype(np.uint8)
-img_dolp_RGB = fpc.stokes.convert_to_RGB_image(img_dolp, normalization=1).astype(np.uint8)
-img_aolp_RGB = fpc.stokes.convert_to_RGB_image(img_aolp, normalization=360).astype(np.uint8)
+img_intensity_RGB = fpc.plot.convert_to_RGB_image(img_intensity).astype(np.uint8)
+img_dolp_RGB = fpc.plot.convert_to_RGB_image(img_dolp, normalization=1).astype(np.uint8)
+img_aolp_RGB = fpc.plot.convert_to_RGB_image(img_aolp, normalization=360).astype(np.uint8)

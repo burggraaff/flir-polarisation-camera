@@ -7,6 +7,19 @@ from matplotlib.colors import LogNorm
 import spectacle
 from spectacle.plot import _saveshow
 from cmcrameri.cm import romaO
+from . import stokes
+
+
+def convert_to_RGB_image(img, normalization=65535, gamma=2.4):
+    """
+    Convert RGB data (any of the Stokes parameters, DoLP/AoLP, etc.) to an RGB image.
+    Applies a gamma correction for better visibility.
+    Data masks are propagated.
+    """
+    img_gamma = spectacle.linearity.sRGB(img, normalization=normalization, gamma=gamma)
+    return img_gamma
+
+
 
 def show_image(data, lims=None, label="RAW Pixel value", ax=None, saveto=None, **kwargs):
     """
@@ -21,7 +34,7 @@ def show_image(data, lims=None, label="RAW Pixel value", ax=None, saveto=None, *
     if newfig:
         plt.figure(figsize=(6,6), tight_layout=True)
         ax = plt.gca()
-    
+
     # Get limits for the colour bar
     if lims is None:
         vmin, vmax = spectacle.symmetric_percentiles(data.ravel(), percent=0.5)
@@ -70,13 +83,13 @@ def show_testplot(data, lims=None, bins=250, label="RAW Pixel value", saveto=Non
     """
     # Make plot
     fig, axs = plt.subplots(ncols=2, figsize=(10,3), tight_layout=True)
-    
+
     # Plot the image
     show_image(data, lims=lims, label=label, ax=axs[0])
-    
+
     # Plot the histogram
     show_histogram(data, bins=bins, xlabel=label, ax=axs[1])
-    
+
     # Save/show the plot
     _saveshow(saveto)
 
