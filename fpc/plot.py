@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LogNorm
 import spectacle
 from spectacle.plot import _saveshow
-from cmcrameri.cm import romaO
+from cmcrameri import cm as colourmaps
 from . import stokes
 
 
@@ -108,7 +108,10 @@ def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intens
 
     # Plot the intensity
     if intensity_lims is None:
-        intensity_lims = spectacle.symmetric_percentiles(img_intensity.ravel(), percent=0.5)
+        if isinstance(img_intensity, np.ma.MaskedArray):  # np.nanpercentile does not work well with masked arrays, they need to be compressed first
+            intensity_lims = spectacle.symmetric_percentiles(img_intensity.compressed(), percent=0.5)
+        else:
+            intensity_lims = spectacle.symmetric_percentiles(img_intensity, percent=0.5)
     vmin, vmax = intensity_lims
     im = axs[0].imshow(img_intensity, cmap=plt.cm.cividis, vmin=vmin, vmax=vmax, **kwargs)
     spectacle.plot.colorbar(im, label="Intensity [ADU]", location=colorbar_location)
@@ -120,7 +123,7 @@ def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intens
 
     # Plot the AoLP
     vmin, vmax = aolp_lims
-    im = axs[2].imshow(img_aolp, cmap=romaO, vmin=vmin, vmax=vmax, **kwargs)
+    im = axs[2].imshow(img_aolp, cmap=colourmaps.romaO, vmin=vmin, vmax=vmax, **kwargs)
     spectacle.plot.colorbar(im, label="AoLP [degrees]", location=colorbar_location)
 
     # Remove ticks and labels on the x and y axes (since these are images)
