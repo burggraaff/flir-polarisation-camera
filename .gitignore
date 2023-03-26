@@ -1,6 +1,7 @@
 data/*
 results/*
 *.raw
+*.pdf
 
 .pylint.d/*
 
