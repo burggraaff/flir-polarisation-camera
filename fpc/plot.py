@@ -22,7 +22,6 @@ def convert_to_RGB_image(img, normalization=65535, gamma=2.4):
     return img_gamma
 
 
-
 def show_image(data, lims=None, label="RAW Pixel value", ax=None, saveto=None, **kwargs):
     """
     Plot a RAW image from one of the polarisation cameras.
@@ -96,6 +95,19 @@ def show_testplot(data, lims=None, bins=250, label="RAW Pixel value", saveto=Non
     _saveshow(saveto)
 
 
+def symmetric_percentiles_maskedcompatible(data, **kwargs):
+    """
+    Apply spectacle.symmetric_percentiles to masked or unmasked arrays.
+    Masked arrays are compressed first to ensure compatibility.
+    """
+    if isinstance(data, np.ma.MaskedArray):  # np.nanpercentile does not work well with masked arrays, they need to be compressed first
+        result = spectacle.symmetric_percentiles(data.compressed(), **kwargs)
+    else:
+        result = spectacle.symmetric_percentiles(data, **kwargs)
+
+    return result
+
+
 def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intensity_lims=None, dolp_lims=(0, 0.2), aolp_lims=(0, 360), colorbar_location="bottom", saveto=None, **kwargs):
     """
     Plot the intensity, DoLP, and AoLP in a column of images.
@@ -110,10 +122,7 @@ def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intens
 
     # Plot the intensity
     if intensity_lims is None:
-        if isinstance(img_intensity, np.ma.MaskedArray):  # np.nanpercentile does not work well with masked arrays, they need to be compressed first
-            intensity_lims = spectacle.symmetric_percentiles(img_intensity.compressed(), percent=0.5)
-        else:
-            intensity_lims = spectacle.symmetric_percentiles(img_intensity, percent=0.5)
+        intensity_lims = symmetric_percentiles_maskedcompatible(img_intensity, percent=0.5)
     vmin, vmax = intensity_lims
     im = axs[0].imshow(img_intensity, cmap=plt.cm.cividis, vmin=vmin, vmax=vmax, **kwargs)
     spectacle.plot.colorbar(im, label="Intensity [ADU]", location=colorbar_location)
