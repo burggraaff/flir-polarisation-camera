@@ -40,9 +40,13 @@ for filename in filenames[::100]:
     img_stokes = fpc.stokes.convert_demosaicked_image_to_stokes(img_demosaicked)  # Dimensions: [x, y, RGB, IQU]
     img_intensity, img_dolp, img_aolp = fpc.stokes.convert_stokes_to_lp(img_stokes)
 
+    # Separate the G images out
+    G_intensity, G_dolp, G_aolp = img_intensity[..., 1], img_dolp[..., 1], img_aolp[..., 1]
+
     # Show the result
-    fpc.plot.show_intensity_dolp_aolp_RGB_separate(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}.png")
-    fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}_RGB.png")
+    fpc.plot.show_intensity_dolp_aolp(G_intensity, G_dolp, G_aolp, saveto=saveto/f"{label}_G.png")
+    # fpc.plot.show_intensity_dolp_aolp_RGB_separate(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}.png")
+    # fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}_RGB.png")
 
 
 # # Extra plot
