@@ -108,7 +108,7 @@ def symmetric_percentiles_maskedcompatible(data, **kwargs):
     return result
 
 
-def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intensity_lims=None, dolp_lims=(0, 0.2), aolp_lims=(0, 360), colorbar_location="bottom", saveto=None, **kwargs):
+def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intensity_lims=None, dolp_lims=(0, 0.2), aolp_lims=(0, 360), cmap_intensity=plt.cm.cividis, cmap_dolp=plt.cm.cividis, cmap_aolp=colourmaps.romaO, colorbar_location="bottom", saveto=None, **kwargs):
     """
     Plot the intensity, DoLP, and AoLP in a column of images.
     If `axs` are supplied, use those. Otherwise, create a new figure.
@@ -124,17 +124,17 @@ def show_intensity_dolp_aolp(img_intensity, img_dolp, img_aolp, axs=None, intens
     if intensity_lims is None:
         intensity_lims = symmetric_percentiles_maskedcompatible(img_intensity, percent=0.5)
     vmin, vmax = intensity_lims
-    im = axs[0].imshow(img_intensity, cmap=plt.cm.cividis, vmin=vmin, vmax=vmax, **kwargs)
+    im = axs[0].imshow(img_intensity, cmap=cmap_intensity, vmin=vmin, vmax=vmax, **kwargs)
     spectacle.plot.colorbar(im, label="Intensity [ADU]", location=colorbar_location)
 
     # Plot the DoLP
     vmin, vmax = dolp_lims
-    im = axs[1].imshow(img_dolp, cmap=plt.cm.cividis, vmin=vmin, vmax=vmax, **kwargs)
+    im = axs[1].imshow(img_dolp, cmap=cmap_dolp, vmin=vmin, vmax=vmax, **kwargs)
     spectacle.plot.colorbar(im, label="DoLP", location=colorbar_location)
 
     # Plot the AoLP
     vmin, vmax = aolp_lims
-    im = axs[2].imshow(img_aolp, cmap=colourmaps.romaO, vmin=vmin, vmax=vmax, **kwargs)
+    im = axs[2].imshow(img_aolp, cmap=cmap_aolp, vmin=vmin, vmax=vmax, **kwargs)
     spectacle.plot.colorbar(im, label="AoLP [degrees]", location=colorbar_location)
 
     # Remove ticks and labels on the x and y axes (since these are images)

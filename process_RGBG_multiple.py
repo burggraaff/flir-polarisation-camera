@@ -14,18 +14,27 @@ import spectacle
 import fpc
 
 # Get the filename from the command line
-folder = Path(argv[1])
-filenames = list(folder.glob("*.raw"))
+data_folder = Path(argv[1])
+filenames = list(data_folder.glob("*.raw"))
+print(f"Loading data from {data_folder.absolute()}")
 
 # Where to save the results
-saveto = Path("E:/processed/") / folder.stem
+data_label = f"{data_folder.parent.stem}_{data_folder.stem}"
+saveto = Path("E:/blackfly_processed/") / data_label
 try:
     mkdir(saveto)
 except FileExistsError:
     pass
 
+print(f"Processed images will be saved in {saveto.absolute()}")
+
+# Step size
+stepsize = 100
+print(f"Looping in steps of {stepsize}; total of {len(filenames)} files. Subset of {len(filenames)/stepsize:.0f} (+- 1) files will be processed.")
+
 # Loop over the filenames
-for filename in filenames[::100]:
+print("\nNow processing:")
+for filename in filenames[::stepsize]:
     print(filename)
     label = filename.stem
 
@@ -44,7 +53,7 @@ for filename in filenames[::100]:
     G_intensity, G_dolp, G_aolp = img_intensity[..., 1], img_dolp[..., 1], img_aolp[..., 1]
 
     # Show the result
-    fpc.plot.show_intensity_dolp_aolp(G_intensity, G_dolp, G_aolp, saveto=saveto/f"{label}_G.png")
+    fpc.plot.show_intensity_dolp_aolp(G_intensity, G_dolp, G_aolp, cmap_dolp=plt.cm.get_cmap("cividis", 4), saveto=saveto/f"{label}_G.png")
     # fpc.plot.show_intensity_dolp_aolp_RGB_separate(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}.png")
     # fpc.plot.show_intensity_dolp_aolp_RGB(img_intensity, img_dolp, img_aolp, title=label, saveto=saveto/f"{label}_RGB.png")
 
