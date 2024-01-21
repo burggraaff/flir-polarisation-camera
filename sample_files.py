@@ -10,8 +10,9 @@ datafiles = sorted(source.glob("*.Raw"))
 identifier = f"{source.parts[-2]}/{source.parts[-1]}"
 
 nrfiles = len(datafiles)
-divider = nrfiles // 5
-selectedfiles = datafiles[::divider][:5]
+nrsample = 100
+divider = nrfiles // nrsample
+selectedfiles = datafiles[::divider][:nrsample]  # Sometimes an additional file slips in due to rounding; the second slice removes it
 
 destination_general = Path("/media/oli4/O4B/Zenodo/BlackFly")
 destination_here = destination_general / identifier
